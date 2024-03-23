@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+
+{% block title %}Subscribers{% endblock %}
+
+{% block content %}
+<div>
+    <h2></h2>
+    <br>
+</div>
+<div>
+    <h2></h2>
+    <br>
+</div>
+
+
+    <div>
+        <h2>CDRs</h2>
+        <table class="table table-dark">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Date Appel</th>
+                <th scope="col">Duree</th>
+                <th scope="col">Numero Appelant</th>
+                <th scope="col">Numero Appele</th>
+                <th scope="col">IMSI</th>
+                <th scope="col">Type</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for cdr in cdrs %}
+                <tr>
+                    <td>{{ cdr.id }}</td>
+                    <td>{{ cdr.callDateTime }}</td>
+                    <td>{{ cdr.callDuration }}</td>
+                    <td>{{ cdr.calleeNumber }}</td>
+                    <td>{{ cdr.callerNumber }}</td>
+                    <td>{{ cdr.imsi }}</td>
+                    <td>{{ cdr.subscriberType }}</td>
+                    <!-- <td>
+                        <a href="">
+                            <i class='bx bx-phone-call'></i>
+                        </a>
+                    </td> -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Generer CDR</button> -->
+    </div>
+
+{% endblock %}

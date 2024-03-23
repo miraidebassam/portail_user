@@ -1,0 +1,72 @@
+{% extends 'index.html' %}
+
+{% block title %}Details{% endblock %}
+
+{% block content %}
+<div>
+    <h2></h2>
+    <br>
+</div>
+<div>
+    <h2>Details Subscriber</h2>
+    <br>
+</div>
+<ul>
+    <li>ID: {{ subscriber.id }}</li>
+    <li>Numéro: {{ subscriber.number }}</li>
+    <li>IMSI: {{ subscriber.imsi }}</li>
+    <li>Date de Création: {{ subscriber.creationDate }}</li>
+    <li>Type d'Abonné: {{ subscriber.subscriberType }}</li>
+    <li>Services Active: {{ subscriber.activeServices }}</li>
+
+
+    <!-- <div class="row">
+        <div class="col">
+            <label>Services utiliés :</label>
+            <div class="row">
+                {% for service in services %}
+                <div class="col-5">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="service{{ loop.index }}" name="servicesToActivate[]" value="{{ service }}">
+                        <label class="form-check-label" for="service{{ loop.index }}">{{ service }}</label>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div> -->
+
+</ul>
+
+<form action="{{ url_for('main.activate_subscriber', number=subscriber.number, subscriberType=subscriber.subscriberType) }}" method="post">
+    {{ csrf_token }}
+    <input type="hidden" name="action" value="{% if subscriber.active %}deactivate{% else %}activate{% endif %}">
+    {% if subscriber.active %}
+        <button type="submit" class="btn btn-danger">Désactiver</button>
+    {% else %}
+        <button type="submit" class="btn btn-success">Activer</button>
+    {% endif %}
+</form>
+
+
+<div>
+    <h2>Services Disponibles</h2>
+    <br>
+</div>
+<form action="{{ url_for('main.add_services_to_subscriber', number=subscriber.number, activate=subscriber.active)}}" method="post">
+    {{ csrf_token }}
+    <div class="row">
+        {% for service in all_services %}
+        <div class="col-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="service{{ service }}" name="servicesToActivate[]" value="{{ service }}" {% if service in subscriber.activeServices %} checked {% endif %}>
+                <label class="form-check-label" for="service{{ service }}">{{ service }}</label>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Mettre à jour les services</button>
+</form>
+{% endblock %}
+

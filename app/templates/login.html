@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="../static/css/login.css">
+
+<div class="wrapper">
+    <div class="logo">
+        <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/profile-design-template-4c23db68ba79c4186fbd258aa06f48b3_screen.jpg?ts=1581063859" alt="">
+    </div>
+    {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            {{ error_message }}
+        </div>
+    {% endif %}
+    <div class="text-center mt-4 name">
+        Connectez-vous
+    </div>
+    <form class="p-3 mt-3" action="{{ url_for('main.login') }}" method="post">
+        <div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="text" name="username" id="username" placeholder="Username">
+        </div>
+        <div class="form-field d-flex align-items-center">
+            <span class="fas fa-key"></span>
+            <input type="password" name="password" id="password" placeholder="Password">
+        </div>
+        <button class="btn mt-3">Login</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+
+{% block title %}Subscribers{% endblock %}
+
+{% block content %}
+<div>
+    <h2></h2>
+    <br>
+</div>
+<div>
+    <h2></h2>
+    <br>
+</div>
+
+    <div>
+        <h2>Factures</h2>
+        <table class="table table-dark">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Subscriber</th>
+                <th scope="col">Amount</th>
+                <!-- <th scope="col">Action</th> -->
+            </tr>
+            </thead>
+            <tbody>
+                {% for invoice in factures['invoices'] %}
+                <tr>
+                    <td>{{ invoice.id }}</td>
+                    <td>{{ invoice.customer_name }}</td>
+                    <td>{{ invoice.amount }}</td>
+                    <!-- <td>
+                        <a href="">
+                            <i class='bx bx-phone-call'></i>
+                        </a>
+                    </td> -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Generer CDR</button> -->
+    </div>
+
+{% endblock %}

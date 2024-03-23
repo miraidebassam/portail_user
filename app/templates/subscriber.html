@@ -1,0 +1,246 @@
+{% extends "index.html" %}
+
+{% block title %}Subscribers{% endblock %}
+
+{% block content %}
+<div>
+    <h2></h2>
+    <br>
+</div>
+<div>
+    <h2></h2>
+    <br>
+</div>
+
+    <div>
+        <h2>Gestion des Abonnés</h2>
+        <table class="table table-dark">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Number</th>
+                <th scope="col">IMSI</th>
+                <th scope="col">Date Création</th>
+                <th scope="col">Type</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for subscriber in subscribers %}
+                <tr>
+                    <td>{{ subscriber.id }}</td>
+                    <td>{{ subscriber.number }}</td>
+                    <td>{{ subscriber.imsi }}</td>
+                    <td>{{ subscriber.creationDate }}</td>
+                    <td>{{ subscriber.subscriberType }}</td>
+                    <td>
+                        <!-- Edit button with a link to detail route -->
+                        <a href="{{ url_for('main.datails_subscriber', number=subscriber.number) }}">
+                            <i class='bx bxs-user-detail bx-xs'></i>
+                        </a>
+                        <!-- Le lien pour ouvrir le modal -->
+                        <a href="#" data-toggle="modal">
+                            <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editModal{{ subscriber.id }}"><i class='bx bx-phone-call'></i></button>
+                        </a>
+                        <!-- Delete button with a link or form to delete subscriber -->
+                        <a href="{{ url_for('main.delete_subscriber', number=subscriber.number) }}">
+                            <i class='bx bx-message-alt-x bx-xs'></i>
+                        </a>
+                        <a href="{{ url_for('main.generate_invoice', number=subscriber.number) }}">
+                            <i class='bx bx-file bx-xs'></i>
+                        </a>
+
+
+
+                        <div class="modal fade my-custom-modal" id="editModal{{ subscriber.id }}" tabindex="-1" aria-labelledby="editSubscriberModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Générer un CDR</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ url_for('main.genererCdr', number=subscriber.number) }}" method="post">
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label for="editNumber" class="text-dark">Numéro</label>
+                                                    <input type="text" class="form-control" id="editNumber" name="number" value="{{ subscriber.number }}" readonly>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="editImsi" class="text-dark">IMSI</label>
+                                                    <input type="text" class="form-control" aria-label="imsi" id="editImsi" value="{{ subscriber.imsi }}" readonly>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label for="numeAppele" class="text-dark">Numéro Appelé</label>
+                                                    <input type="text" class="form-control" id="numeAppele" name="numeAppele">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="duree" class="text-dark">Durée</label>
+                                                    <input type="number" class="form-control" id="duree" name="duree">
+                                                </div>
+                                            </div>
+
+                                            <br>
+                                            <div class="row">
+                                                <!-- <div class="col">
+                                                    <label for="editDateCreation" class="text-dark">Date Création</label>
+                                                    {% set creation_date_parts = subscriber.creationDate.split('T') %}
+                                                  <input type="date" class="form-control" aria-label="dateCreation" id="editDateCreation" value="{{ creation_date_parts[0] }}" readonly>
+                                                </div> -->
+
+                                                <div class="col">
+                                                    <label for="editDateCall" class="text-dark">Date Call</label>
+                                                    <input type="date" class="form-control" aria-label="dateCreation" id="editDateCall">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="duree" class="text-dark">Type d'abonné</label>
+                                                    <select class="form-select" aria-label="Default select example" id="editSubscriberType" disabled>
+                                                        <option selected>Type d'abonne</option>
+                                                        <option value="1" {% if subscriber.subscriberType == 'PREPAID' %}selected{% endif %}>PREPAID</option>
+                                                        <option value="2" {% if subscriber.subscriberType == 'POSTPAID' %}selected{% endif %}>POSTPAID</option>
+                                                    </select>                                
+                                                </div>
+                                            </div>
+                                            <!-- <div class="row">
+                                                <div class="col">
+                                                    <label for="editActiveServices" class="form-label" style="color: black;">Services Actifs</label>
+                                                    <ul id="editActiveServices">
+                                                            <li style="color: black;">{{ subscriber.activeServices }}</li>
+                                                    </ul>
+                                                </div>
+                                            </div> -->
+                                            <br>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
+                                                <button type="submit" class="btn btn-primary">Générer</button>
+                                            </div>        
+                                        </form>
+                                    </div>
+                                    <!-- <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+                    <!-- Le modal -->
+                        <div class="modal fade my-custom-modal" id="cdrModal{{ subscriber.id }}" tabindex="-1" role="dialog" aria-labelledby="cdrModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="cdrModalLabel">Générer CDR</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Contenu du modal -->
+                                        <!-- Vous pouvez ajouter ici le contenu que vous souhaitez afficher dans le modal -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                        <!-- Ajoutez un bouton pour générer le CDR si nécessaire -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Ajouter</button>
+
+        <div class="modal fade my-custom-modal" id="addModal" tabindex="-1" aria-labelledby="editSubscriberModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Creer un Subscriber</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('main.create_subscriber') }}" method="post">
+                            <div class="row">
+                                <div class="col">
+                                  <input type="text" class="form-control" id="addNumber" name="addNumber" placeholder="Num Abonne">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                
+                                <div class="col">
+                                    <select class="form-select" aria-label="Default select example" id="addSubscriberType" name="addSubscriberType">
+                                        <option selected>Type d'abonne</option>
+                                        <option value="PREPAID">PREPAID</option>
+                                        <option value="POSTPAID">POSTPAID</option>
+                                    </select>                                
+                                </div>
+                            </div>
+                            <br>
+
+
+                            <div class="row">
+                                <div class="col">
+                                    <label>Services à activer :</label>
+                                    <div class="row">
+                                        {% for service in services %}
+                                        <div class="col-5">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="service{{ loop.index }}" name="servicesToActivate[]" value="{{ service }}">
+                                                <label class="form-check-label" for="service{{ loop.index }}">{{ service }}</label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>        
+                        </form>
+                    </div>
+                    <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <!-- Modal -->
+    
+    
+    </div>
+
+    <style>
+        .my-custom-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1050;
+    }
+    </style>
+
+
+{% endblock %}
